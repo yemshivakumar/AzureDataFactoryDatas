@@ -1,0 +1,8 @@
+{
+	"name": "EmployeeCompleteDetails",
+	"properties": {
+		"annotations": [
+			"Employee"
+		]
+	}
+}
