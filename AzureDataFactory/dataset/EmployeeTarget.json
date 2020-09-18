@@ -1,5 +1,5 @@
 {
-	"name": "EmployeeTarge",
+	"name": "EmployeeTarget",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "ls_StorageAccount",
