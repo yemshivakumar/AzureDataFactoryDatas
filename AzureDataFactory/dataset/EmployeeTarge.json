@@ -1,0 +1,20 @@
+{
+	"name": "EmployeeTarge",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_StorageAccount",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"quoteChar": "\""
+		},
+		"schema": []
+	}
+}
