@@ -11,7 +11,7 @@
 			"location": {
 				"type": "AzureBlobStorageLocation",
 				"fileName": "EmployeesCopy.csv",
-				"container": "Output"
+				"container": "output"
 			},
 			"columnDelimiter": ",",
 			"escapeChar": "\\",

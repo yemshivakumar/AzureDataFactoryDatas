@@ -6,7 +6,7 @@
 			"type": "LinkedServiceReference"
 		},
 		"parameters": {
-			"SorceStorageLocation": {
+			"SourceStorageLocation": {
 				"type": "string"
 			}
 		},
@@ -17,7 +17,7 @@
 				"type": "AzureBlobStorageLocation",
 				"fileName": "employeedata.csv",
 				"container": {
-					"value": "@dataset().SorceStorageLocation",
+					"value": "@dataset().SourceStorageLocation",
 					"type": "Expression"
 				}
 			},
