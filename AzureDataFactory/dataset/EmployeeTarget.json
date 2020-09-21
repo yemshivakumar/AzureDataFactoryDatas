@@ -5,21 +5,13 @@
 			"referenceName": "ls_StorageAccount",
 			"type": "LinkedServiceReference"
 		},
-		"parameters": {
-			"TargetPath": {
-				"type": "string"
-			}
-		},
 		"annotations": [],
 		"type": "DelimitedText",
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobStorageLocation",
 				"fileName": "EmployeesCopy.csv",
-				"container": {
-					"value": "@concat(dataset().TargetPath,'/output')",
-					"type": "Expression"
-				}
+				"container": "Output"
 			},
 			"columnDelimiter": ",",
 			"escapeChar": "\\",

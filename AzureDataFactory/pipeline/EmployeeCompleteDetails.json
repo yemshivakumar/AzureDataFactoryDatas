@@ -3,7 +3,7 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "Copy Employee data to Output folder",
+				"name": "Copy data",
 				"type": "Copy",
 				"dependsOn": [],
 				"policy": {
@@ -13,16 +13,7 @@
 					"secureOutput": false,
 					"secureInput": false
 				},
-				"userProperties": [
-					{
-						"name": "Source",
-						"value": "@{pipeline().globalParameters.StorageAccountRoolPath}//employeedata.csv"
-					},
-					{
-						"name": "Destination",
-						"value": "output//EmployeesCopy.csv"
-					}
-				],
+				"userProperties": [],
 				"typeProperties": {
 					"source": {
 						"type": "DelimitedTextSource",
@@ -48,53 +39,6 @@
 					"enableStaging": false,
 					"translator": {
 						"type": "TabularTranslator",
-						"mappings": [
-							{
-								"source": {
-									"type": "String",
-									"physicalType": "String",
-									"ordinal": 1
-								},
-								"sink": {
-									"type": "String",
-									"physicalType": "String",
-									"ordinal": 1
-								}
-							},
-							{
-								"source": {
-									"type": "String",
-									"ordinal": 2
-								},
-								"sink": {
-									"type": "String",
-									"physicalType": "String",
-									"ordinal": 2
-								}
-							},
-							{
-								"source": {
-									"type": "String",
-									"ordinal": 3
-								},
-								"sink": {
-									"type": "String",
-									"physicalType": "String",
-									"ordinal": 3
-								}
-							},
-							{
-								"source": {
-									"type": "String",
-									"ordinal": 4
-								},
-								"sink": {
-									"type": "String",
-									"physicalType": "String",
-									"ordinal": 4
-								}
-							}
-						],
 						"typeConversion": true,
 						"typeConversionSettings": {
 							"allowDataTruncation": true,
@@ -105,34 +49,17 @@
 				"inputs": [
 					{
 						"referenceName": "EmployeeData",
-						"type": "DatasetReference",
-						"parameters": {
-							"SorucePath": {
-								"value": "@concat(pipeline().globalParameters.StorageAccountRoolPath,'/inputdata')",
-								"type": "Expression"
-							}
-						}
+						"type": "DatasetReference"
 					}
 				],
 				"outputs": [
 					{
 						"referenceName": "EmployeeTarget",
-						"type": "DatasetReference",
-						"parameters": {
-							"TargetPath": {
-								"value": "@variables('StorageAccPath')",
-								"type": "Expression"
-							}
-						}
+						"type": "DatasetReference"
 					}
 				]
 			}
 		],
-		"variables": {
-			"StorageAccPath": {
-				"type": "String"
-			}
-		},
 		"annotations": [
 			"Employee"
 		]
