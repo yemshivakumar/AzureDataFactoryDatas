@@ -25,10 +25,13 @@
 					"name": "JoinEmpAndDept"
 				},
 				{
-					"name": "Select1"
+					"name": "Select"
+				},
+				{
+					"name": "DeptSort"
 				}
 			],
-			"script": "source(output(\n\t\tempid as integer,\n\t\tname as string,\n\t\tcountry as string,\n\t\tdeptid as integer\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> EmployeeTable\nsource(output(\n\t\tdeptid as integer,\n\t\tdeptname as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> DepartmentTable\nEmployeeTable, DepartmentTable join(EmployeeTable@deptid == DepartmentTable@deptid,\n\tjoinType:'inner',\n\tbroadcast: 'auto')~> JoinEmpAndDept\nJoinEmpAndDept select(mapColumn(\n\t\tEmployeeId = empid,\n\t\tName = name,\n\t\tCountry = country,\n\t\tDeptname = deptname\n\t),\n\tpartitionBy('hash', 1),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> Select1"
+			"script": "source(output(\n\t\tempid as integer,\n\t\tname as string,\n\t\tcountry as string,\n\t\tdeptid as integer\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> EmployeeTable\nsource(output(\n\t\tdeptid as integer,\n\t\tdeptname as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> DepartmentTable\nEmployeeTable, DepartmentTable join(EmployeeTable@deptid == DepartmentTable@deptid,\n\tjoinType:'inner',\n\tbroadcast: 'auto')~> JoinEmpAndDept\nJoinEmpAndDept select(mapColumn(\n\t\tEmployeeId = empid,\n\t\tName = name,\n\t\tCountry = country,\n\t\tDeptname = deptname\n\t),\n\tpartitionBy('hash', 1),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> Select\nJoinEmpAndDept sort(asc(deptname, true)) ~> DeptSort"
 		}
 	}
 }
