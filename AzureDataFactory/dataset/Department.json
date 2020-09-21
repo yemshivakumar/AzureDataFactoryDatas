@@ -1,21 +1,16 @@
 {
-	"name": "EmployeeData",
+	"name": "Department",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "ls_StorageAccount",
 			"type": "LinkedServiceReference"
-		},
-		"parameters": {
-			"SourceStorageLocation": {
-				"type": "string"
-			}
 		},
 		"annotations": [],
 		"type": "DelimitedText",
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobStorageLocation",
-				"fileName": "employeedata.csv",
+				"fileName": "departmentdata.csv",
 				"container": "inputdata"
 			},
 			"columnDelimiter": ",",
@@ -23,19 +18,6 @@
 			"firstRowAsHeader": true,
 			"quoteChar": "\""
 		},
-		"schema": [
-			{
-				"type": "String"
-			},
-			{
-				"type": "String"
-			},
-			{
-				"type": "String"
-			},
-			{
-				"type": "String"
-			}
-		]
+		"schema": []
 	}
 }

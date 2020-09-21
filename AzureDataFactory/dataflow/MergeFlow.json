@@ -1,5 +1,5 @@
 {
-	"name": "dataflow1",
+	"name": "MergeFlow",
 	"properties": {
 		"type": "MappingDataFlow",
 		"typeProperties": {
@@ -10,11 +10,22 @@
 						"type": "DatasetReference"
 					},
 					"name": "Employee"
+				},
+				{
+					"dataset": {
+						"referenceName": "Department",
+						"type": "DatasetReference"
+					},
+					"name": "Department"
 				}
 			],
 			"sinks": [],
-			"transformations": [],
-			"script": "source(output(\n\t\tColumn_1 as string,\n\t\tColumn_2 as string,\n\t\tColumn_3 as string,\n\t\tColumn_4 as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: true,\n\tignoreNoFilesFound: false) ~> Employee"
+			"transformations": [
+				{
+					"name": "JoinEmpAndDept"
+				}
+			],
+			"script": "source(output(\n\t\tColumn_1 as string,\n\t\tColumn_2 as string,\n\t\tColumn_3 as string,\n\t\tColumn_4 as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: true,\n\tignoreNoFilesFound: false) ~> Employee\nsource(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> Department\nEmployee, Department join(ERROR_FUNCTION('') == ERROR_FUNCTION(''),\n\tjoinType:'inner',\n\tbroadcast: 'auto')~> JoinEmpAndDept"
 		}
 	}
 }
