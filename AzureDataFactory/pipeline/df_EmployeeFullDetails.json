@@ -58,7 +58,7 @@
 						"type": "DelimitedTextSource",
 						"storeSettings": {
 							"type": "AzureBlobStorageReadSettings",
-							"fileListPath": "output/EmployeeFulldetails.csv"
+							"recursive": true
 						},
 						"formatSettings": {
 							"type": "DelimitedTextReadSettings"
@@ -148,7 +148,7 @@
 				},
 				"inputs": [
 					{
-						"referenceName": "ds_EmployeeFulldetails",
+						"referenceName": "ds_stgEmployeeFullDetails",
 						"type": "DatasetReference"
 					}
 				],
