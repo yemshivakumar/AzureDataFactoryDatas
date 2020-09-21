@@ -1,12 +1,4 @@
 {
 	"name": "EmpPortalDataTransfer",
-	"properties": {
-		"globalParameters": {
-			"StorageAccountRoolPath": {
-				"type": "string",
-				"value": "storageaccountadfdata"
-			}
-		}
-	},
 	"location": "centralus"
 }
