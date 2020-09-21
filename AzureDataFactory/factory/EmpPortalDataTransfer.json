@@ -1,4 +1,12 @@
 {
 	"name": "EmpPortalDataTransfer",
+	"properties": {
+		"globalParameters": {
+			"SourcePath": {
+				"type": "string",
+				"value": "inputdata"
+			}
+		}
+	},
 	"location": "centralus"
 }
