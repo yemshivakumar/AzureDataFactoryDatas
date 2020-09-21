@@ -1,0 +1,471 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory name",
+			"defaultValue": "EmpPortalDataTransfer"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/df_EmployeeFullDetails')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "EmployeeDeptDetails",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "EmployeeDeptDetails",
+								"type": "DataFlowReference"
+							},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							}
+						}
+					},
+					{
+						"name": "Copy data to sql",
+						"type": "Copy",
+						"dependsOn": [
+							{
+								"activity": "EmployeeDeptDetails",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [
+							{
+								"name": "Source",
+								"value": "output//"
+							},
+							{
+								"name": "Destination",
+								"value": "dbo.employee"
+							}
+						],
+						"typeProperties": {
+							"source": {
+								"type": "DelimitedTextSource",
+								"storeSettings": {
+									"type": "AzureBlobStorageReadSettings",
+									"recursive": true
+								},
+								"formatSettings": {
+									"type": "DelimitedTextReadSettings"
+								}
+							},
+							"sink": {
+								"type": "AzureSqlSink"
+							},
+							"enableStaging": true,
+							"stagingSettings": {
+								"linkedServiceName": {
+									"referenceName": "ls_StorageAccount",
+									"type": "LinkedServiceReference"
+								},
+								"path": "staging"
+							},
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"name": "SNo",
+											"type": "Int32",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "SNo",
+											"type": "Int32",
+											"physicalType": "int"
+										}
+									},
+									{
+										"source": {
+											"name": "EmployeeId",
+											"type": "Int32",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "EmployeeId",
+											"type": "Int32",
+											"physicalType": "int"
+										}
+									},
+									{
+										"source": {
+											"name": "Name",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "EmployeName",
+											"type": "String",
+											"physicalType": "varchar"
+										}
+									},
+									{
+										"source": {
+											"name": "Country",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "Country",
+											"type": "String",
+											"physicalType": "varchar"
+										}
+									},
+									{
+										"source": {
+											"name": "Deptname",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "DepartmentName",
+											"type": "String",
+											"physicalType": "varchar"
+										}
+									}
+								],
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "ds_stgEmployeeFullDetails",
+								"type": "DatasetReference"
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "ds_asqlEmployee",
+								"type": "DatasetReference"
+							}
+						]
+					}
+				],
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/dataflows/EmployeeDeptDetails')]",
+				"[concat(variables('factoryId'), '/datasets/ds_stgEmployeeFullDetails')]",
+				"[concat(variables('factoryId'), '/datasets/ds_asqlEmployee')]",
+				"[concat(variables('factoryId'), '/linkedServices/ls_StorageAccount')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ds_Department')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "ls_StorageAccount",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "departmentdata.csv",
+						"container": "inputdata"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "deptid",
+						"type": "String"
+					},
+					{
+						"name": "deptname",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/ls_StorageAccount')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ds_Employee')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "ls_StorageAccount",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "employeedata.csv",
+						"container": "inputdata"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"type": "String"
+					},
+					{
+						"type": "String"
+					},
+					{
+						"type": "String"
+					},
+					{
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/ls_StorageAccount')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ds_EmployeeFulldetails')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "ls_StorageAccount",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"container": "output"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/ls_StorageAccount')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ds_asqlEmployee')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "asqldb_EmpData",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "employee"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/asqldb_EmpData')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ds_stgEmployeeFullDetails')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "ls_StorageAccount",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "EmployeeFulldetails.csv",
+						"container": "output"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"type": "String"
+					},
+					{
+						"type": "String"
+					},
+					{
+						"type": "String"
+					},
+					{
+						"type": "String"
+					},
+					{
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/ls_StorageAccount')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ak_StorageConnectionString')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureKeyVault",
+				"typeProperties": {
+					"baseUrl": "https://sivasecretkeys.vault.azure.net/"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/asqldb_EmpData')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureSqlDatabase",
+				"typeProperties": {
+					"connectionString": {
+						"type": "AzureKeyVaultSecret",
+						"store": {
+							"referenceName": "ak_StorageConnectionString",
+							"type": "LinkedServiceReference"
+						},
+						"secretName": "srisrisqldbconnectionstring",
+						"secretVersion": "2b198c5dd9fd40539a493d2be0ffcca1"
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/ak_StorageConnectionString')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ls_StorageAccount')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureBlobStorage",
+				"typeProperties": {
+					"connectionString": {
+						"type": "AzureKeyVaultSecret",
+						"store": {
+							"referenceName": "ak_StorageConnectionString",
+							"type": "LinkedServiceReference"
+						},
+						"secretName": "storageaccountadfdatakey"
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/ak_StorageConnectionString')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/EmployeeDeptDetails')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "ds_Employee",
+								"type": "DatasetReference"
+							},
+							"name": "EmployeeTable"
+						},
+						{
+							"dataset": {
+								"referenceName": "ds_Department",
+								"type": "DatasetReference"
+							},
+							"name": "DepartmentTable"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "ds_EmployeeFulldetails",
+								"type": "DatasetReference"
+							},
+							"name": "EmployeeFullDetails"
+						}
+					],
+					"transformations": [
+						{
+							"name": "JoinEmpAndDept"
+						},
+						{
+							"name": "RemovedDeptID"
+						},
+						{
+							"name": "SortedDepartment"
+						},
+						{
+							"name": "skAddedSerialNumber"
+						}
+					],
+					"script": "source(output(\n\t\tempid as integer,\n\t\tname as string,\n\t\tcountry as string,\n\t\tdeptid as integer\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> EmployeeTable\nsource(output(\n\t\tdeptid as integer,\n\t\tdeptname as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> DepartmentTable\nEmployeeTable, DepartmentTable join(EmployeeTable@deptid == DepartmentTable@deptid,\n\tjoinType:'inner',\n\tbroadcast: 'auto')~> JoinEmpAndDept\nJoinEmpAndDept select(mapColumn(\n\t\tEmployeeId = empid,\n\t\tName = name,\n\t\tCountry = country,\n\t\tDeptname = deptname\n\t),\n\tpartitionBy('hash', 1),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> RemovedDeptID\nRemovedDeptID sort(asc(Deptname, true)) ~> SortedDepartment\nSortedDepartment keyGenerate(output(SNo as long),\n\tstartAt: 1L) ~> skAddedSerialNumber\nskAddedSerialNumber sink(allowSchemaDrift: true,\n\tvalidateSchema: true,\n\tpartitionFileNames:['EmployeeFulldetails.csv'],\n\tmapColumn(\n\t\tSNo,\n\t\tEmployeeId,\n\t\tName,\n\t\tCountry,\n\t\tDeptname\n\t),\n\tpartitionBy('hash', 1),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> EmployeeFullDetails"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/ds_Employee')]",
+				"[concat(variables('factoryId'), '/datasets/ds_Department')]",
+				"[concat(variables('factoryId'), '/datasets/ds_EmployeeFulldetails')]"
+			]
+		}
+	]
+}

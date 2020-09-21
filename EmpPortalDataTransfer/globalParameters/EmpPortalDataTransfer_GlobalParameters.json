@@ -1,0 +1,6 @@
+{
+	"SourcePath": {
+		"type": "string",
+		"value": "inputdata"
+	}
+}
