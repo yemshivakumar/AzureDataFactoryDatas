@@ -1,0 +1,17 @@
+{
+	"name": "ls_StorageAccount",
+	"properties": {
+		"annotations": [],
+		"type": "AzureBlobStorage",
+		"typeProperties": {
+			"connectionString": {
+				"type": "AzureKeyVaultSecret",
+				"store": {
+					"referenceName": "ak_StorageConnectionString",
+					"type": "LinkedServiceReference"
+				},
+				"secretName": "storageaccountadfdatakey"
+			}
+		}
+	}
+}

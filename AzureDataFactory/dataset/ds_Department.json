@@ -1,0 +1,32 @@
+{
+	"name": "ds_Department",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_StorageAccount",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "departmentdata.csv",
+				"container": "inputdata"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"name": "deptid",
+				"type": "String"
+			},
+			{
+				"name": "deptname",
+				"type": "String"
+			}
+		]
+	}
+}

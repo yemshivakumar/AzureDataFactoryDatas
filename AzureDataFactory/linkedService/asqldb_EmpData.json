@@ -1,0 +1,18 @@
+{
+	"name": "asqldb_EmpData",
+	"properties": {
+		"annotations": [],
+		"type": "AzureSqlDatabase",
+		"typeProperties": {
+			"connectionString": {
+				"type": "AzureKeyVaultSecret",
+				"store": {
+					"referenceName": "ak_StorageConnectionString",
+					"type": "LinkedServiceReference"
+				},
+				"secretName": "srisrisqldbconnectionstring",
+				"secretVersion": "2b198c5dd9fd40539a493d2be0ffcca1"
+			}
+		}
+	}
+}

@@ -1,0 +1,16 @@
+{
+	"name": "ds_asqlEmployee",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "asqldb_EmpData",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "employee"
+		}
+	}
+}
