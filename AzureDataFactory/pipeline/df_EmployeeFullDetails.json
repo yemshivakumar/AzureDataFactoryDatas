@@ -81,7 +81,7 @@
 							{
 								"source": {
 									"name": "SNo",
-									"type": "Int16",
+									"type": "Int32",
 									"physicalType": "String"
 								},
 								"sink": {
@@ -93,7 +93,7 @@
 							{
 								"source": {
 									"name": "EmployeeId",
-									"type": "Int16",
+									"type": "Int32",
 									"physicalType": "String"
 								},
 								"sink": {
