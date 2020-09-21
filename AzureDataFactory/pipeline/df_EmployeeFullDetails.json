@@ -58,7 +58,7 @@
 						"type": "DelimitedTextSource",
 						"storeSettings": {
 							"type": "AzureBlobStorageReadSettings",
-							"recursive": true
+							"fileListPath": "output/EmployeeFulldetails.csv"
 						},
 						"formatSettings": {
 							"type": "DelimitedTextReadSettings"
