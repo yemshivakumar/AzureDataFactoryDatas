@@ -5,11 +5,6 @@
 			"referenceName": "ls_StorageAccount",
 			"type": "LinkedServiceReference"
 		},
-		"parameters": {
-			"SourceStorageLocation": {
-				"type": "string"
-			}
-		},
 		"annotations": [],
 		"type": "DelimitedText",
 		"typeProperties": {
