@@ -1,0 +1,17 @@
+{
+	"name": "DS_ASQL_ExternalSystem",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_ASQL_ExternalSystem",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "author"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

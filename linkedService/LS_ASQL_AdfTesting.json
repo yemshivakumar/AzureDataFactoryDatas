@@ -1,0 +1,23 @@
+{
+	"name": "LS_ASQL_AdfTesting",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"annotations": [],
+		"type": "AzureSqlDatabase",
+		"typeProperties": {
+			"connectionString": "Integrated Security=False;Encrypt=True;Connection Timeout=30;Data Source=adftestingserver.database.windows.net;Initial Catalog=AdfTesting;User ID=siva",
+			"password": {
+				"type": "AzureKeyVaultSecret",
+				"store": {
+					"referenceName": "KV_AzureKeyVault",
+					"type": "LinkedServiceReference"
+				},
+				"secretName": "AzSQLDbPassword"
+			}
+		},
+		"connectVia": {
+			"referenceName": "AutoResolveIntegrationRuntime",
+			"type": "IntegrationRuntimeReference"
+		}
+	}
+}
